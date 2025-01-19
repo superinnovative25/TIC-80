@@ -18,6 +18,10 @@
 	path = vendor/lua
 	url = https://github.com/lua/lua.git
 	shallow = true
+[submodule "vendor/sokol"]
+	path = vendor/sokol
+	url = https://github.com/floooh/sokol.git
+	shallow = true
 [submodule "vendor/squirrel"]
 	path = vendor/squirrel
 	url = https://github.com/albertodemichelis/squirrel.git
