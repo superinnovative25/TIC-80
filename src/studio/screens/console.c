@@ -28,7 +28,7 @@
 #include "studio/config.h"
 #include "ext/png.h"
 #include "ext/json.h"
-#include "zip.h"
+// #include "zip.h"
 #include "retro_endianness.h"
 
 #if defined(TIC80_PRO)
@@ -99,12 +99,6 @@
     macro(bpp)
 
 #define EXPORT_CMD_LIST(macro)  \
-    macro(win)                  \
-    macro(winxp)                \
-    macro(linux)                \
-    macro(rpi)                  \
-    macro(mac)                  \
-    macro(html)                 \
     macro(binary)               \
     macro(tiles)                \
     macro(sprites)              \
@@ -2067,192 +2061,192 @@ static void exportSprites(Console* console, const char* filename, tic_tile* base
     }
 }
 
-static void* embedCart(Console* console, u8* app, s32* size)
-{
-    tic_mem* tic = console->tic;
-    u8* data = NULL;
-    void* cart = newCart();
+// static void* embedCart(Console* console, u8* app, s32* size)
+// {
+//     tic_mem* tic = console->tic;
+//     u8* data = NULL;
+//     void* cart = newCart();
 
-    SCOPE(free(cart))
-    {
-        s32 cartSize = tic_cart_save(&tic->cart, cart);
+//     SCOPE(free(cart))
+//     {
+//         s32 cartSize = tic_cart_save(&tic->cart, cart);
 
-        s32 zipSize = sizeof(tic_cartridge);
-        u8* zipData = (u8*)malloc(zipSize);
+//         s32 zipSize = sizeof(tic_cartridge);
+//         u8* zipData = (u8*)malloc(zipSize);
 
-        SCOPE(free(zipData))
-        {
-            if((zipSize = tic_tool_zip(zipData, zipSize, cart, cartSize)))
-            {
-                s32 appSize = *size;
+//         SCOPE(free(zipData))
+//         {
+//             if((zipSize = tic_tool_zip(zipData, zipSize, cart, cartSize)))
+//             {
+//                 s32 appSize = *size;
 
-                EmbedHeader header =
-                {
-                    .appSize = appSize,
-                    .cartSize = zipSize,
-                };
+//                 EmbedHeader header =
+//                 {
+//                     .appSize = appSize,
+//                     .cartSize = zipSize,
+//                 };
 
-                memcpy(header.sig, CART_SIG, STRLEN(CART_SIG));
+//                 memcpy(header.sig, CART_SIG, STRLEN(CART_SIG));
 
-                s32 finalSize = appSize + sizeof header + header.cartSize;
-                data = malloc(finalSize);
+//                 s32 finalSize = appSize + sizeof header + header.cartSize;
+//                 data = malloc(finalSize);
 
-                if (data)
-                {
-                    memcpy(data, app, appSize);
-                    memcpy(data + appSize, &header, sizeof header);
-                    memcpy(data + appSize + sizeof header, zipData, header.cartSize);
+//                 if (data)
+//                 {
+//                     memcpy(data, app, appSize);
+//                     memcpy(data + appSize, &header, sizeof header);
+//                     memcpy(data + appSize + sizeof header, zipData, header.cartSize);
 
-                    *size = finalSize;
-                }
-            }
-        }
-    }
+//                     *size = finalSize;
+//                 }
+//             }
+//         }
+//     }
 
-    return data;
-}
+//     return data;
+// }
 
-typedef struct
-{
-    Console* console;
-    char filename[TICNAME_MAX];
-} GameExportData;
+// typedef struct
+// {
+//     Console* console;
+//     char filename[TICNAME_MAX];
+// } GameExportData;
 
-static void onExportGet(const net_get_data* data)
-{
-    GameExportData* exportData = (GameExportData*)data->calldata;
-    Console* console = exportData->console;
+// static void onExportGet(const net_get_data* data)
+// {
+//     GameExportData* exportData = (GameExportData*)data->calldata;
+//     Console* console = exportData->console;
 
-    switch(data->type)
-    {
-    case net_get_progress:
-        {
-            console->cursor.pos.x = 0;
-            printf("\r");
-            printBack(console, "GET ");
-            printFront(console, data->url);
+//     switch(data->type)
+//     {
+//     case net_get_progress:
+//         {
+//             console->cursor.pos.x = 0;
+//             printf("\r");
+//             printBack(console, "GET ");
+//             printFront(console, data->url);
 
-            char buf[8];
-            sprintf(buf, " [%i%%]", data->progress.size * 100 / data->progress.total);
-            printBack(console, buf);
-        }
-        break;
-    case net_get_error:
-        printError(console, "file downloading error :(");
-        commandDone(console);
-        free(exportData);
-        break;
-    default:
-        break;
-    }
-}
+//             char buf[8];
+//             sprintf(buf, " [%i%%]", data->progress.size * 100 / data->progress.total);
+//             printBack(console, buf);
+//         }
+//         break;
+//     case net_get_error:
+//         printError(console, "file downloading error :(");
+//         commandDone(console);
+//         free(exportData);
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
-static void onNativeExportGet(const net_get_data* data)
-{
-    switch(data->type)
-    {
-    case net_get_done:
-        {
-            GameExportData* exportData = (GameExportData*)data->calldata;
-            Console* console = exportData->console;
+// static void onNativeExportGet(const net_get_data* data)
+// {
+//     switch(data->type)
+//     {
+//     case net_get_done:
+//         {
+//             GameExportData* exportData = (GameExportData*)data->calldata;
+//             Console* console = exportData->console;
 
-            tic_mem* tic = console->tic;
+//             tic_mem* tic = console->tic;
 
-            char filename[TICNAME_MAX];
-            strcpy(filename, exportData->filename);
-            free(exportData);
+//             char filename[TICNAME_MAX];
+//             strcpy(filename, exportData->filename);
+//             free(exportData);
 
-            s32 size = data->done.size;
+//             s32 size = data->done.size;
 
-            printLine(console);
+//             printLine(console);
 
-            const char* path = tic_fs_path(console->fs, filename);
-            void* buf = NULL;
+//             const char* path = tic_fs_path(console->fs, filename);
+//             void* buf = NULL;
 
-            onFileExported(console, filename, (buf = embedCart(console, data->done.data, &size)) && fs_write(path, buf, size));
-            chmod(path, DEFAULT_CHMOD);
+//             onFileExported(console, filename, (buf = embedCart(console, data->done.data, &size)) && fs_write(path, buf, size));
+//             chmod(path, DEFAULT_CHMOD);
 
-            if (buf)
-                free(buf);
-        }
-        break;
-    default:
-        onExportGet(data);
-    }
-}
+//             if (buf)
+//                 free(buf);
+//         }
+//         break;
+//     default:
+//         onExportGet(data);
+//     }
+// }
 
-static void exportGame(Console* console, const char* name, const char* system, net_get_callback callback, ExportParams params)
-{
-    tic_mem* tic = console->tic;
-    printLine(console);
-    GameExportData data = {console};
-    strcpy(data.filename, name);
+// static void exportGame(Console* console, const char* name, const char* system, net_get_callback callback, ExportParams params)
+// {
+//     tic_mem* tic = console->tic;
+//     printLine(console);
+//     GameExportData data = {console};
+//     strcpy(data.filename, name);
 
-    char url[TICNAME_MAX] = "/export/" DEF2STR(TIC_VERSION_MAJOR) "." DEF2STR(TIC_VERSION_MINOR) TIC_VERSION_STATUS "/";
-    strcat(url, system);
+//     char url[TICNAME_MAX] = "/export/" DEF2STR(TIC_VERSION_MAJOR) "." DEF2STR(TIC_VERSION_MINOR) TIC_VERSION_STATUS "/";
+//     strcat(url, system);
 
-#if defined(TIC80_PRO)
-    if (params.alone)
-        strcat(url, tic_get_script(console->tic)->name);
-#endif
+// #if defined(TIC80_PRO)
+//     if (params.alone)
+//         strcat(url, tic_get_script(console->tic)->name);
+// #endif
 
-    tic_net_get(console->net, url, callback, MOVE(data));
-}
+//     tic_net_get(console->net, url, callback, MOVE(data));
+// }
 
-static inline void exportNativeGame(Console* console, const char* name, const char* system, ExportParams params)
-{
-    exportGame(console, name, system, onNativeExportGet, params);
-}
+// static inline void exportNativeGame(Console* console, const char* name, const char* system, ExportParams params)
+// {
+//     exportGame(console, name, system, onNativeExportGet, params);
+// }
 
-static void onHtmlExportGet(const net_get_data* data)
-{
-    switch(data->type)
-    {
-    case net_get_done:
-        {
-            GameExportData* exportData = (GameExportData*)data->calldata;
-            Console* console = exportData->console;
+// static void onHtmlExportGet(const net_get_data* data)
+// {
+//     switch(data->type)
+//     {
+//     case net_get_done:
+//         {
+//             GameExportData* exportData = (GameExportData*)data->calldata;
+//             Console* console = exportData->console;
 
-            tic_mem* tic = console->tic;
+//             tic_mem* tic = console->tic;
 
-            char filename[TICNAME_MAX];
-            strcpy(filename, exportData->filename);
-            free(exportData);
+//             char filename[TICNAME_MAX];
+//             strcpy(filename, exportData->filename);
+//             free(exportData);
 
-            const char* zipPath = tic_fs_path(console->fs, filename);
-            bool errorOccurred = !fs_write(zipPath, data->done.data, data->done.size);
+//             const char* zipPath = tic_fs_path(console->fs, filename);
+//             bool errorOccurred = !fs_write(zipPath, data->done.data, data->done.size);
 
-            if(!errorOccurred)
-            {
-                struct zip_t *zip = zip_open(zipPath, ZIP_DEFAULT_COMPRESSION_LEVEL, 'a');
+//             if(!errorOccurred)
+//             {
+//                 struct zip_t *zip = zip_open(zipPath, ZIP_DEFAULT_COMPRESSION_LEVEL, 'a');
 
-                if(zip) SCOPE(zip_close(zip))
-                {
-                    void* cart = newCart();
+//                 if(zip) SCOPE(zip_close(zip))
+//                 {
+//                     void* cart = newCart();
 
-                    SCOPE(free(cart))
-                    {
-                        s32 cartSize = tic_cart_save(&tic->cart, cart);
+//                     SCOPE(free(cart))
+//                     {
+//                         s32 cartSize = tic_cart_save(&tic->cart, cart);
 
-                        if(cartSize)
-                        {
-                            zip_entry_open(zip, "cart.tic");
-                            zip_entry_write(zip, cart, cartSize);
-                            zip_entry_close(zip);
-                        }
-                        else errorOccurred = true;
-                    }
-                }
-                else errorOccurred = true;
-            }
+//                         if(cartSize)
+//                         {
+//                             zip_entry_open(zip, "cart.tic");
+//                             zip_entry_write(zip, cart, cartSize);
+//                             zip_entry_close(zip);
+//                         }
+//                         else errorOccurred = true;
+//                     }
+//                 }
+//                 else errorOccurred = true;
+//             }
 
-            onFileExported(console, filename, !errorOccurred);
-        }
-        break;
-    default:
-        onExportGet(data);
-    }
-}
+//             onFileExported(console, filename, !errorOccurred);
+//         }
+//         break;
+//     default:
+//         onExportGet(data);
+//     }
+// }
 
 static const char* getFilename(const char* filename, const char* ext)
 {
@@ -2266,35 +2260,35 @@ static const char* getFilename(const char* filename, const char* ext)
     return Name;
 }
 
-static void onExport_win(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportNativeGame(console, getFilename(filename, ".exe"), param, params);
-}
+// static void onExport_win(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportNativeGame(console, getFilename(filename, ".exe"), param, params);
+// }
 
-static void onExport_winxp(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportNativeGame(console, getFilename(filename, ".exe"), param, params);
-}
+// static void onExport_winxp(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportNativeGame(console, getFilename(filename, ".exe"), param, params);
+// }
 
-static void onExport_linux(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportNativeGame(console, filename, param, params);
-}
+// static void onExport_linux(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportNativeGame(console, filename, param, params);
+// }
 
-static void onExport_rpi(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportNativeGame(console, filename, param, params);
-}
+// static void onExport_rpi(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportNativeGame(console, filename, param, params);
+// }
 
-static void onExport_mac(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportNativeGame(console, filename, param, params);
-}
+// static void onExport_mac(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportNativeGame(console, filename, param, params);
+// }
 
-static void onExport_html(Console* console, const char* param, const char* filename, ExportParams params)
-{
-    exportGame(console, getFilename(filename, ".zip"), param, onHtmlExportGet, params);
-}
+// static void onExport_html(Console* console, const char* param, const char* filename, ExportParams params)
+// {
+//     exportGame(console, getFilename(filename, ".zip"), param, onHtmlExportGet, params);
+// }
 
 static void onExport_tiles(Console* console, const char* param, const char* filename, ExportParams params)
 {
@@ -3006,8 +3000,6 @@ static const char HelpUsage[] = "help [<text>"
                                                                                         \
     macro("export",                                                                     \
         NULL,                                                                           \
-        "Export cart to HTML,\n"                                                        \
-        "native build (win linux rpi mac),\n"                                           \
         "export sprites/map/... as a .png image "                                       \
         "or export sfx and music to .wav files.",                                       \
         "\nexport [" EXPORT_CMD_LIST(EXPORT_CMD_DEF) "] "                            \
@@ -4342,7 +4334,7 @@ static void tick(Console* console)
 
     if(console->tickCounter == 0)
     {
-        if(!start->embed)
+        // if(!start->embed)
         {
             loadDemo(console, tic_get_script(tic));
 
@@ -4358,29 +4350,29 @@ static void tick(Console* console)
 
             commandDone(console);
         }
-        else printBack(console, "\n loading cart...");
+        // else printBack(console, "\n loading cart...");
     }
 
     tic_api_cls(tic, TIC_COLOR_BG);
     drawConsoleText(console);
 
-    if(start->embed)
-    {
-        if(console->tickCounter >= (u32)(console->args.skip ? 1 : TIC80_FRAMERATE))
-        {
-            runGame(console->studio);
+    // if(start->embed)
+    // {
+    //     if(console->tickCounter >= (u32)(console->args.skip ? 1 : TIC80_FRAMERATE))
+    //     {
+    //         runGame(console->studio);
 
-            start->embed = false;
-            studioRomLoaded(console->studio);
+    //         start->embed = false;
+    //         studioRomLoaded(console->studio);
 
-            printLine(console);
-            commandDone(console);
-            console->active = true;
+    //         printLine(console);
+    //         commandDone(console);
+    //         console->active = true;
 
-            return;
-        }
-    }
-    else
+    //         return;
+    //     }
+    // }
+    // else
     {
         if(console->cursor.delay)
             console->cursor.delay--;
@@ -4579,11 +4571,11 @@ void initConsole(Console* console, Studio* studio, tic_fs* fs, tic_net* net, Con
             printf("error: cart `%s` not loaded\n", args.cart);
             exit(1);
         }
-        else
-            getStartScreen(console->studio)->embed = true;
+        // else
+        //     getStartScreen(console->studio)->embed = true;
     }
 
-    console->active = !start->embed;
+    // console->active = !start->embed;
 }
 
 void freeConsole(Console* console)

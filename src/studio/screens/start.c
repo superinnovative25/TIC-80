@@ -93,30 +93,31 @@ static void tick(Start* start)
     start->ticks++;
 }
 
-static void* _memmem(const void* haystack, size_t hlen, const void* needle, size_t nlen)
-{
-    const u8* p = haystack;
-    size_t plen = hlen;
+// static void* _memmem(const void* haystack, size_t hlen, const void* needle, size_t nlen)
+// {
+//     const u8* p = haystack;
+//     size_t plen = hlen;
 
-    if (!nlen) return NULL;
+//     if (!nlen) return NULL;
 
-    s32 needle_first = *(u8*)needle;
+//     s32 needle_first = *(u8*)needle;
 
-    while (plen >= nlen && (p = memchr(p, needle_first, plen - nlen + 1)))
-    {
-        if (!memcmp(p, needle, nlen))
-            return (void*)p;
+//     while (plen >= nlen && (p = memchr(p, needle_first, plen - nlen + 1)))
+//     {
+//         if (!memcmp(p, needle, nlen))
+//             return (void*)p;
 
-        p++;
-        plen = hlen - (p - (const u8*)haystack);
-    }
+//         p++;
+//         plen = hlen - (p - (const u8*)haystack);
+//     }
 
-    return NULL;
-}
+//     return NULL;
+// }
 
 void initStart(Start* start, Studio* studio, const char* cart)
 {
-    enum duration {
+    enum duration 
+    {
         immediate = 0,
         one_second = TIC80_FRAMERATE,
         forever = -1
@@ -128,7 +129,7 @@ void initStart(Start* start, Studio* studio, const char* cart)
         .tic = getMemory(studio),
         .initialized = true,
         .tick = tick,
-        .embed = false,
+        // .embed = false,
         .ticks = 0,
         .stage = 0,
         .stages =
@@ -156,7 +157,7 @@ void initStart(Start* start, Studio* studio, const char* cart)
         start->color[i] = CLAMP(((i % STUDIO_TEXT_BUFFER_WIDTH) + (i / STUDIO_TEXT_BUFFER_WIDTH)) / 2,
             tic_color_black, tic_color_dark_grey);
 
-#if defined(__EMSCRIPTEN__)
+// #if defined(__EMSCRIPTEN__)
 
     if (cart)
     {
@@ -167,61 +168,61 @@ void initStart(Start* start, Studio* studio, const char* cart)
         {
             tic_cart_load(&start->tic->cart, data, size);
             tic_api_reset(start->tic);
-            start->embed = true;
+            // start->embed = true;
         }
     }
 
-#else
+// #else
 
-    {
-        const char* appPath = fs_apppath();
+//     {
+//         const char* appPath = fs_apppath();
 
-        s32 appSize = 0;
-        u8* app = fs_read(appPath, &appSize);
+//         s32 appSize = 0;
+//         u8* app = fs_read(appPath, &appSize);
 
-        if(app) SCOPE(free(app))
-        {
-            s32 size = appSize;
-            const u8* ptr = app;
+//         if(app) SCOPE(free(app))
+//         {
+//             s32 size = appSize;
+//             const u8* ptr = app;
 
-            while(true)
-            {
-                const EmbedHeader* header = (const EmbedHeader*)_memmem(ptr, size, CART_SIG, STRLEN(CART_SIG));
+//             while(true)
+//             {
+//                 const EmbedHeader* header = (const EmbedHeader*)_memmem(ptr, size, CART_SIG, STRLEN(CART_SIG));
 
-                if(header)
-                {
-                    if(appSize == header->appSize + sizeof(EmbedHeader) + header->cartSize)
-                    {
-                        u8* data = calloc(1, sizeof(tic_cartridge));
+//                 if(header)
+//                 {
+//                     if(appSize == header->appSize + sizeof(EmbedHeader) + header->cartSize)
+//                     {
+//                         u8* data = calloc(1, sizeof(tic_cartridge));
 
-                        if(data)
-                        {
-                            s32 dataSize = tic_tool_unzip(data, sizeof(tic_cartridge), app + header->appSize + sizeof(EmbedHeader), header->cartSize);
+//                         if(data)
+//                         {
+//                             s32 dataSize = tic_tool_unzip(data, sizeof(tic_cartridge), app + header->appSize + sizeof(EmbedHeader), header->cartSize);
 
-                            if(dataSize)
-                            {
-                                tic_cart_load(&start->tic->cart, data, dataSize);
-                                tic_api_reset(start->tic);
-                                start->embed = true;
-                            }
+//                             if(dataSize)
+//                             {
+//                                 tic_cart_load(&start->tic->cart, data, dataSize);
+//                                 tic_api_reset(start->tic);
+//                                 start->embed = true;
+//                             }
 
-                            free(data);
-                        }
+//                             free(data);
+//                         }
 
-                        break;
-                    }
-                    else
-                    {
-                        ptr = (const u8*)header + STRLEN(CART_SIG);
-                        size = appSize - (s32)(ptr - app);
-                    }
-                }
-                else break;
-            }
-        }
-    }
+//                         break;
+//                     }
+//                     else
+//                     {
+//                         ptr = (const u8*)header + STRLEN(CART_SIG);
+//                         size = appSize - (s32)(ptr - app);
+//                     }
+//                 }
+//                 else break;
+//             }
+//         }
+//     }
 
-#endif
+// #endif
 }
 
 void freeStart(Start* start)

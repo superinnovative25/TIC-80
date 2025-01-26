@@ -48,7 +48,7 @@ target_include_directories(tic80studio
     PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(tic80studio PUBLIC tic80core PRIVATE zip wave_writer argparse giflib png)
+target_link_libraries(tic80studio PUBLIC tic80core PRIVATE wave_writer argparse giflib png)
 
 if(USE_NAETT)
     target_compile_definitions(tic80studio PRIVATE USE_NAETT)
