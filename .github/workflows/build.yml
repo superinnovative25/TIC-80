@@ -22,7 +22,7 @@ jobs:
         shell: cmd
         run: |
           cd build
-          cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=MinSizeRel ..
+          cmake -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=MinSizeRel ..
           cmake --build . --config MinSizeRel --parallel
 
       - name: Deploy
@@ -33,7 +33,7 @@ jobs:
             build/bin/tic80.exe
 
   # === Ubuntu ===
-  linux-gcc12-glibc235:
+  linux:
     runs-on: ubuntu-22.04
 
     steps:
@@ -45,7 +45,7 @@ jobs:
       - name: Install
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-12 g++-12 libglu1-mesa-dev libasound2-dev libpulse-dev libaudio-dev libsamplerate0-dev libcurl4-openssl-dev -y
+          sudo apt-get install gcc-12 g++-12 libxi-dev libasound2-dev -y
           sudo ln -s -f /usr/bin/gcc-12 /usr/bin/gcc
           sudo ln -s -f /usr/bin/g++-12 /usr/bin/g++
           

@@ -72,6 +72,11 @@ if(BUILD_SOKOL)
         add_executable(tic80 ${TIC80_SRC})
     endif()
 
+    if(EMSCRIPTEN)
+        set_target_properties(tic80 PROPERTIES LINK_FLAGS "-s USE_WEBGPU=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -s FETCH=1 --pre-js ${CMAKE_SOURCE_DIR}/build/html/prejs.js -lidbfs.js")
+    endif()
+
+
     target_include_directories(tic80 PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${CMAKE_SOURCE_DIR}/src
