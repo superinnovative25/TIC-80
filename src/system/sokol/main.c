@@ -106,6 +106,7 @@ void tic_sys_fullscreen_set(bool value)
 
 bool tic_sys_fullscreen_get()
 {
+    return false;
 }
 
 void tic_sys_message(const char* title, const char* message)
@@ -165,6 +166,7 @@ static void app_init(void)
     });
 
     sgl_setup(&(sgl_desc_t){
+        0
         // .logger.func = slog_func,
     });
 
@@ -275,6 +277,7 @@ static void app_frame(void)
 
     sg_pass_action pass_action = 
     {
+        0
         // .colors = 
         // {{
         //     .load_action = SG_LOADACTION_CLEAR,

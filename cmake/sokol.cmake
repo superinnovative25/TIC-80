@@ -9,11 +9,17 @@ add_library(sokol STATIC ${SOKOL_LIB_SRC})
 
 if(APPLE)
     target_compile_definitions(sokol PRIVATE SOKOL_METAL)
+elseif(LINUX)
+    target_compile_definitions(sokol PRIVATE SOKOL_GLCORE)
 elseif(WIN32)
     target_compile_definitions(sokol PRIVATE SOKOL_D3D11)
+elseif(EMSCRIPTEN)
+    target_compile_definitions(sokol PRIVATE SOKOL_WGPU)
 endif()
 
 if(APPLE)
+
+    target_compile_options(sokol PRIVATE -x objective-c)
 
     target_link_libraries(sokol
         "-framework Cocoa"
@@ -22,6 +28,9 @@ if(APPLE)
         "-framework MetalKit"
         "-framework AudioToolbox"
     )
+
+elseif(LINUX)
+    target_link_libraries(sokol X11 GL m dl asound)
 elseif(WIN32)
     target_link_libraries(sokol D3D11)
 endif()
