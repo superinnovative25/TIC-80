@@ -34,10 +34,6 @@
 	path = vendor/zlib
 	url = https://github.com/madler/zlib.git
 	shallow = true
-[submodule "vendor/zip"]
-	path = vendor/zip
-	url = https://github.com/kuba--/zip.git
-	shallow = true
 [submodule "vendor/moonscript"]
 	path = vendor/moonscript
 	url = https://github.com/nesbox/moonscript.git
@@ -49,10 +45,6 @@
 [submodule "vendor/libpng"]
 	path = vendor/libpng
 	url = https://github.com/glennrp/libpng.git
-	shallow = true
-[submodule "vendor/sdl2"]
-	path = vendor/sdl2
-	url = https://github.com/libsdl-org/SDL.git
 	shallow = true
 [submodule "mruby"]
 	path = vendor/mruby
@@ -86,10 +78,6 @@
 	path = vendor/jsmn
 	url = https://github.com/zserge/jsmn.git
 	shallow = true
-[submodule "vendor/sdl-gpu"]
-	path = vendor/sdl-gpu
-	url = https://github.com/aliceisjustplaying/sdl-gpu.git
-	branch = master
 [submodule "vendor/pocketpy"]
 	path = vendor/pocketpy
 	url = https://github.com/PrimedErwin/pocketpy.git
