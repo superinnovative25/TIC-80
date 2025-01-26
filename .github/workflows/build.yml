@@ -45,7 +45,7 @@ jobs:
       - name: Install
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-12 g++-12 libxi-dev libasound2-dev -y
+          sudo apt-get install gcc-12 g++-12 libxi-dev libasound2-dev libgl-dev -y
           sudo ln -s -f /usr/bin/gcc-12 /usr/bin/gcc
           sudo ln -s -f /usr/bin/g++-12 /usr/bin/g++
           
@@ -62,34 +62,8 @@ jobs:
           path: |
             build/bin/tic80
 
-  # === MacOS 13 ===
-  macos:
-    runs-on: macos-13
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-
-      - name: Install
-        run: brew uninstall --ignore-dependencies libidn2
-
-      - name: Build
-        run: |
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=MinSizeRel ..
-          cmake --build . --parallel
-
-      - name: Deploy
-        uses: actions/upload-artifact@v4
-        with:
-          name: "tic80-macos"
-          path: |
-            build/bin/tic80
-
   # === MacOS 14 / arm64 ===
-  macos-arm64:
+  macos:
     runs-on: macos-14
 
     steps:
@@ -110,7 +84,7 @@ jobs:
       - name: Deploy
         uses: actions/upload-artifact@v4
         with:
-          name: "tic80-macos-arm64"
+          name: "tic80-macos"
           path: |
             build/bin/tic80
 
