@@ -30,7 +30,7 @@ if(APPLE)
     )
 
 elseif(LINUX)
-    target_link_libraries(sokol X11 GL Xi XCursor m dl asound)
+    target_link_libraries(sokol X11 GL Xi Xcursor m dl asound)
 elseif(WIN32)
     target_link_libraries(sokol D3D11)
 endif()
