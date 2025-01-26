@@ -459,8 +459,10 @@ static void app_input(const sapp_event* event)
         handleKeydown(event->key_code, false);
         break;
     case SAPP_EVENTTYPE_CHAR:
-        if(event->char_code < 128)
+        if(event->char_code > 32 && event->char_code < 127)
+        {
             platform.keyboard.text = event->char_code;
+        }
         break;
     case SAPP_EVENTTYPE_MOUSE_MOVE:
         {
