@@ -11,7 +11,7 @@ android {
     compileSdkVersion 31
     defaultConfig {
         if (buildAsApplication) {
-            applicationId "com.nesbox.tic"
+            applicationId "com.nesbox.tic80"
         }
         minSdkVersion 24
         targetSdkVersion 31
